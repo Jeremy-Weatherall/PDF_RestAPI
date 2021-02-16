@@ -11,7 +11,7 @@ logFile=C:\\Temp\\pdfOutput\\PDFlog.log
 #
 
 login.user=jweatherall@tableau.com
-login.password=R0cket123
+login.password=
 
 # Example of URL for online account: https://us-east-1.online.tableau.com/#/site/jeremyonline/views/TestView_16129846298070/Names?:iid=1
 
@@ -31,23 +31,22 @@ server.api.version=/api/3.7/
 concurrent.requests=10
 
 
-# View Names can be duplicated, so if we search for a view, we may get multiple values returned, so pass in workbook name, as shown in URL
+# View Names can be duplicated, so if we search for a view, we may get multiple values returned, so use values displayed in URL
 # https://us-east-1.online.tableau.com/#/site/jeremyonline/views/TestView_16129846298070/CustomerandYear_1?:iid=1
-# In example above, workbook was saved as TestView, but as this name was in use, it was appended with numeric values
-# we need the content URL as well as the workbook name as we cannot filter on contentURL, so we need to retreive all workbooks
-# with the same name, and then search for contentURL!!!
-# contentURL will be the same as the csv.workbook.name, unless a second (or more) workbooks are saved with the same name
+# In example above, workbook was saved as Test View, but as this name was in use, it was appended with numeric values
+# and the view name was 'Customer and Year', but we use the URL values
+# 
 
-csv.workbook.name=TestView
-csv.view=CustomerandYear_1
-csv.workbook.contentURL=TestView_16129846298070
+csv.url.workbook.name=TestView_16134922006850
+csv.url.view=Filtervalues
+
 
 # Include column we are using for filter
 
-pdf.workbook.name=TestView
-pdf.view=Output
-pdf.Filter.Column=Customer and year
-pdf.workbook.contentURL=TestView_16129846298070
+pdf.url.workbook.name=TestView_16134922006850
+pdf.url.view=Dashboard1
+pdf.Filter.Column=Fancy New Filter Values Column
+
 
 #
 #Page layout options
@@ -55,7 +54,7 @@ pdf.workbook.contentURL=TestView_16129846298070
 
 #see https://help.tableau.com/current/api/rest_api/en-us/REST/rest_api_ref.htm#query_view_pdf
 #The orientation of the pages in the .pdf file produced. The value can be Portrait or Landscape. If this parameter is not present the page orientation will default to Portrait.
-page.layout=landscape
+page.layout=portrait
 
 #The type of page, which determines the page dimensions of the .pdf file returned. The value can be: A3, A4, A5, B5, Executive, Folio, Ledger, Legal, Letter, Note, Quarto, or Tabloid.
 #If this parameter is not present the page type will default to Legal.

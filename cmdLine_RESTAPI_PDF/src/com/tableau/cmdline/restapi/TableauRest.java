@@ -66,7 +66,7 @@ public class TableauRest {
 		api_getWorkbookPermissions("sites/{0}/workbooks/{1}/permissions"),
 		api_getDatasourcePermissions("sites/{0}/datasources/{1}/permissions"),
 		api_getViewData("sites/{0}/views/{1}/data"),
-		api_getWorkbook("sites/{0}/workbooks?filter=name:eq:{1}"),
+		api_getWorkbook("sites/{0}/workbooks?filter=contentUrl:eq:{1}"),
 		api_getViewByPath("sites/{0}/views?filter=viewUrlName:eq:{1}"),
 		api_getViewPDF("sites/{0}/views/{1}/pdf?type={2}&orientation={3}&vf_{4}=")
 		
@@ -192,12 +192,10 @@ public class TableauRest {
 	}
 	
 
-	public String getWorkbookID( String workbook, String contentURL) throws UnsupportedEncodingException {
+	public String getWorkbookID( String workbook) throws UnsupportedEncodingException {
 		
 		
 		
-		if (contentURL == null ||contentURL.equals(""))
-			contentURL=workbook;
 		
 		String localURL = tslt.getUrlAndAPI() +  APIURL.api_getWorkbook.getUrl();
 		//catch spaces and non URL standard characters in project name
@@ -218,19 +216,11 @@ public class TableauRest {
 			if (((JSONObject) jsonObject.get("pagination")).get("totalAvailable").equals("0"))
 				throw new Error("Workbook <" + workbook + "> was not found");
 			
-			 JSONObject child = (JSONObject) jsonObject.get("workbooks");
-			 JSONArray childArray = (JSONArray) child.get("workbook");
-
-		     for (int i = 0; i < childArray.size(); i++) {
-				
-					
-					String wkbk = ((String) ((JSONObject) childArray.get(i)).get("contentUrl"));
-					if (wkbk.equals(contentURL))
-						return ((String) ((JSONObject) childArray.get(i)).get("id"));
-			 }
-
-			throw new Error("Workbook " + workbook + ", with contentURL " +  contentURL + " not found");
-			
+			JSONObject child = (JSONObject) jsonObject.get("workbooks");
+			JSONArray childArray = (JSONArray) child.get("workbook");
+			 
+ 			return ((String) ((JSONObject) childArray.get(0)).get("id"));
+						
 		} catch (Exception | Error e) {
 			throw new Error("Error in getting Workbook ID: " + e.getMessage());
 		}

@@ -80,9 +80,9 @@ public class BatchPDF {
 				 * Using workbook ID, get the view ID
 				 * Using the view ID, get data back from this view
 				 */
-				tslt.setViewWorkbookID(tr.getWorkbookID(s_properties.getProperty("csv.workbook.name"),s_properties.getProperty("csv.workbook.contentURL")));
+				tslt.setViewWorkbookID(tr.getWorkbookID(s_properties.getProperty("csv.url.workbook.name")));
 				
-				tslt.setViewID(tr.getViewID(s_properties.getProperty("csv.view")));
+				tslt.setViewID(tr.getViewID(s_properties.getProperty("csv.url.view")));
 				//now get the data for this view
 				String[] values = tr.getViewData();
 				_core.writeToLog("There are " + (values.length-1) + " values to iterate over",bq);
@@ -97,8 +97,8 @@ public class BatchPDF {
 				 * Use the view ID to generate PDF
 				 */
 				
-				tslt.setViewWorkbookID(tr.getWorkbookID(s_properties.getProperty("pdf.workbook.name"),s_properties.getProperty("pdf.workbook.contentURL")));
-				tslt.setViewID(tr.getViewID(s_properties.getProperty("pdf.view")));
+				tslt.setViewWorkbookID(tr.getWorkbookID(s_properties.getProperty("pdf.url.workbook.name")));
+				tslt.setViewID(tr.getViewID(s_properties.getProperty("pdf.url.view")));
 				tslt.setViewURLpdfFilterColumn((s_properties.getProperty("pdf.Filter.Column")));
 				
 			    /*
@@ -213,15 +213,15 @@ public class BatchPDF {
 			_errors += "Unable to find logon password in properties file.\n";
 		}
 	
-		if (doesConfigFileHaveValue("csv.view") != true) {
-			_errors += "Unable to find URL for CSV file download in properties file.\n";
+		if (doesConfigFileHaveValue("csv.url.view") != true) {
+			_errors += "Unable to find URL for CSV file download in properties file. See: 'csv.url.view'\n";
 		}
 		if (doesConfigFileHaveValue("pdf.Filter.Column") != true) {
 			_errors += "Unable to find the column that we are using as a filter. See: 'pdf.Filter.Column'\n";
 		}
 		
-		if (doesConfigFileHaveValue("pdf.view") != true) {
-			_errors += "Unable to find worksheet name to genereate PDFs for in properties file. See: 'pdf.view'\n";
+		if (doesConfigFileHaveValue("pdf.url.view") != true) {
+			_errors += "Unable to find worksheet name to genereate PDFs for in properties file. See: 'pdf.url.view'\n";
 		}
 		
 		if (doesConfigFileHaveValue("server.url") != true) {
