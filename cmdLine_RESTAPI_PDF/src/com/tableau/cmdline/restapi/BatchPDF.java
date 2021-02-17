@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -39,6 +41,8 @@ public class BatchPDF {
 				"*******************Starting pdf generation using properties file: " + args[0] + "*******************");
 		BlockingQueue<String> bq = new ArrayBlockingQueue<>(400, true, logList);
 
+		LocalDateTime startTime = LocalDateTime.now();
+		
 		try {
 			
 			if (args.length == 1) {
@@ -169,6 +173,14 @@ public class BatchPDF {
 		} catch (final Exception e) {
 			_core.writeToLog(e.toString(),bq);
 		}
+		
+		LocalDateTime endTime = LocalDateTime.now();
+		long hours = ChronoUnit.HOURS.between(startTime, endTime);
+        long minutes = ChronoUnit.MINUTES.between(startTime, endTime) -(hours*60);
+        long seconds = ChronoUnit.SECONDS.between(startTime, endTime)-((hours*60) + (minutes*60));
+		
+        
+        _core.writeToLog("Duration: "+ hours+ "h: " + minutes + "m: " + seconds +"s",bq);
 		_core.writeToLog("End",bq);
 	
 	}
