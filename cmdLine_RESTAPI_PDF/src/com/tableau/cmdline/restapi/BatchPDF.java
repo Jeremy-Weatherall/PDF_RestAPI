@@ -80,7 +80,7 @@ public class BatchPDF {
 				/*
 				 * Get data to iterate over
 				 * View and workbook names are not unique, but content URL is 
-				 * Get workbookID by getting list of workbooks with a specific name, then search these for one with matching contentURL
+				 * Get workbookID using  contentURL
 				 * Using workbook ID, get the view ID
 				 * Using the view ID, get data back from this view
 				 */
@@ -96,7 +96,7 @@ public class BatchPDF {
 				/*
 				 * Get dashboard to generate PDF for
 				 * View and workbook names are not unique, but content URL is 
-				 * Get workbookID by getting list of workbooks with a specific name, then search these for one with matching contentURL
+				 * Get workbookID using  contentURL
 				 * Using workbook ID, get the view ID
 				 * Use the view ID to generate PDF
 				 */
@@ -124,13 +124,13 @@ public class BatchPDF {
 				localURL= tslt.getUrlAndAPI() + localURL; 
 				
 				//see how many threads we should be using
-				//max 5, min 1
+				//max 10, min 1
 				if (_core.doesConfigFileHaveValue("concurrent.requests"))
 					tslt.setConcurrentThreads(Integer.parseInt(s_properties.getProperty("concurrent.requests")));
 				
 				//set up CountDownLatch with number of reports to run
 				/*
-				  CountDownLatch has a counter field, which you can decrement as we require. We can then use it to block a calling thread until it's been counted down to zero.
+				  CountDownLatch has a counter field, which we decrement as each PDF is created. We can then use it to block a calling thread until it's been counted down to zero.
 				 */
 				CountDownLatch doneSignal = new CountDownLatch(values.length-1);
 				
@@ -145,6 +145,8 @@ public class BatchPDF {
 					String filter=(String) hmIterator.next();
 					//first value is column name, ignore
 					if (counter>0) {
+						//check \r is not on the end of the filter value (not sure why this happens, only seen it on self hosted server)
+						filter = filter.replaceAll("\\R$", "");  
 						String pdfURL=localURL+URLEncoder.encode(filter,StandardCharsets.UTF_8.toString());
 						String fileName = s_properties.getProperty("file.Output")+ URLEncoder.encode(filter,StandardCharsets.UTF_8.toString())+".pdf";
 						String startMessage="Requesting PDF " + counter + " of " + (values.length-1) + " " +  URLEncoder.encode(filter,StandardCharsets.UTF_8.toString())+".pdf";
@@ -178,9 +180,8 @@ public class BatchPDF {
 		long hours = ChronoUnit.HOURS.between(startTime, endTime);
         long minutes = ChronoUnit.MINUTES.between(startTime, endTime) -(hours*60);
         long seconds = ChronoUnit.SECONDS.between(startTime, endTime)-((hours*60) + (minutes*60));
+		_core.writeToLog("Duration: "+ hours+ "h: " + minutes + "m: " + seconds +"s",bq);
 		
-        
-        _core.writeToLog("Duration: "+ hours+ "h: " + minutes + "m: " + seconds +"s",bq);
 		_core.writeToLog("End",bq);
 	
 	}
@@ -259,7 +260,7 @@ public class BatchPDF {
 
 	private boolean doesConfigFileHaveValue(String _key) {
 
-		if (s_properties.getProperty(_key) == null || s_properties.getProperty(_key).trim().equals(""))
+		if (s_properties.getProperty(_key) == null || (s_properties.getProperty(_key).trim().equals("")&& !_key.equals("server.site")))
 			return false;
 		return true;
 
