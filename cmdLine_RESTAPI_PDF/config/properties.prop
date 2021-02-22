@@ -13,7 +13,11 @@ logFile=C:\\Temp\\pdfOutput\\PDFlog.log
 login.user=jweatherall@tableau.com
 login.password=
 
+
 # Example of URL for online account: https://us-east-1.online.tableau.com/#/site/jeremyonline/views/TestView_16129846298070/Names?:iid=1
+# for on premise server, Default site can either be entered as default or left empty after the =
+# server.site=default or server.site=
+
 
 server.site=jeremyonline
 server.url=https://us-east-1.online.tableau.com
