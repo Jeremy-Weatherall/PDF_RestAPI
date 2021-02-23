@@ -29,6 +29,8 @@ public class TableauServerLogonTokens {
 			userPassword = userPassword.substring(0,userPassword.length()-1);
 		this.userPassword = userPassword;
 		setServerURL(url);
+		if (site.toLowerCase().equals("default"))
+			site="";
 		this.site = site;
 		
 	}
