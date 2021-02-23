@@ -146,9 +146,27 @@ public class BatchPDF {
 					//first value is column name, ignore
 					if (counter>0) {
 						//check \r is not on the end of the filter value (not sure why this happens, only seen it on self hosted server)
-						filter = filter.replaceAll("\\R$", "");  
-						String pdfURL=localURL+URLEncoder.encode(filter,StandardCharsets.UTF_8.toString());
-						String fileName = s_properties.getProperty("file.Output")+ URLEncoder.encode(filter,StandardCharsets.UTF_8.toString())+".pdf";
+						if (filter.endsWith("\r"))
+							filter=filter.substring(0, filter.length()-1);
+						//column values with , etc in string are enclosed in double quotes, so remove if at start and end
+						if (filter.endsWith("\"") && filter.startsWith("\""))
+						{
+							filter=filter.substring(0, filter.length()-1);
+							filter=filter.substring(1, filter.length());
+							
+						}
+						
+						//need to convert comma's in filter to %5C%2C
+						//StandardCharsets.UTF_8.toString() converts to %2C, so we need to add escape
+						filter = URLEncoder.encode(filter,StandardCharsets.UTF_8.toString());
+						String fileName = filter;
+						filter=filter.replaceAll("%2C", "%5C%2C");
+						
+						String pdfURL=localURL+filter;
+						
+						
+						
+						fileName = s_properties.getProperty("file.Output")+ fileName+".pdf";
 						String startMessage="Requesting PDF " + counter + " of " + (values.length-1) + " " +  URLEncoder.encode(filter,StandardCharsets.UTF_8.toString())+".pdf";
 					
 						PDFRunnerRESTAPI worker = new PDFRunnerRESTAPI(pdfURL,fileName, bq, doneSignal, startMessage,_core);
