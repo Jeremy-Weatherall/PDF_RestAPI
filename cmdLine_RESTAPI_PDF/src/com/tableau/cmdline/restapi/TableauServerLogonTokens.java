@@ -11,7 +11,7 @@ public class TableauServerLogonTokens {
 	private String userName;
 	private String userPassword;
 	private String url;
-	private String site;
+	private String site="";
 	private String urlAndAPI;
 	private String apiVersion="/api/3.7/";
 	private String viewURLpdfFilterColumn="";

@@ -48,12 +48,10 @@ public class LogWriter extends Thread {
 				String _str = queue.take();
 
 				if (_str != null && !_str.equals("End")) {
-					// test to see if PDF created
-				//	if (!pdfCreated(_str))
 						bw.write(dateFormat.format(new Date()) + ": " + _str + "\n");//
 						bw.flush();
 				}
-				if (_str != null && _str.equals("End")) {
+				else if (_str != null && _str.equals("End")) {
 					bw.write(dateFormat.format(new Date()) + ": " +"**************End******************\n");
 					bw.flush();
 					break;
@@ -65,7 +63,6 @@ public class LogWriter extends Thread {
 		} finally {
 
 			try {
-
 				if (bw != null)
 					bw.close();
 
@@ -73,30 +70,10 @@ public class LogWriter extends Thread {
 					fw.close();
 
 			} catch (IOException ex) {
-
 				ex.printStackTrace();
-
 			}
 		}
 
-	}
-
-
-	private boolean pdfCreated(String _line) {
-		String reportID="";
-		if (_line.startsWith(LogWriter.reportID)) {
-			 reportID = _line.substring(9);
-		} else if (_line.endsWith(LogWriter.stopRequested)) {
-			//WriteToLog("stopRequested", payLoad.get("id")+":stopRequested" );
-			reportID=_line;
-		}
-		
-		if (reportID.length()>0) {
-			
-			
-			return true;
-		}
-		return false;
 	}
 
 }

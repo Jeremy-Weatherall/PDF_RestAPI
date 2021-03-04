@@ -92,8 +92,6 @@ public class TableauRest {
 		super();
 		TableauRest.bq=bq;
 		TableauRest.tslt = tslt;
-		
-		
 	}
 
 	
@@ -195,12 +193,9 @@ public class TableauRest {
 	public String getWorkbookID( String workbook) throws UnsupportedEncodingException {
 		
 		
-		
-		
 		String localURL = tslt.getUrlAndAPI() +  APIURL.api_getWorkbook.getUrl();
 		//catch spaces and non URL standard characters in project name
 		localURL = MessageFormat.format(localURL, tslt.getSiteID(), URLEncoder.encode(workbook,StandardCharsets.UTF_8.toString()));
-
 		
 		try {
 
@@ -233,7 +228,6 @@ public class TableauRest {
 		String localURL = tslt.getUrlAndAPI() +  APIURL.api_getViewByPath.getUrl();
 		//catch spaces and non URL standard characters in project name
 		localURL = MessageFormat.format(localURL, tslt.getSiteID(), URLEncoder.encode(view,StandardCharsets.UTF_8.toString()));
-
 		
 		try {
 
@@ -249,20 +243,13 @@ public class TableauRest {
 			if (((JSONObject) jsonObject.get("pagination")).get("totalAvailable").equals("0"))
 				throw new Error("View <" + view + "> was not found");
 
-			
 			//may get multiple values back, so search through looks for workbook name
 			
 			       JSONObject child = (JSONObject) jsonObject.get("views");
-			
 			       JSONArray childArray = (JSONArray) child.get("view");
-
 					for (int i = 0; i < childArray.size(); i++) {
-					
-						
-				
 						String wrkbkID=		(String)	((JSONObject) ((JSONObject) childArray.get(i)).get("workbook")).get("id");
-					
-					if(tslt.getViewWorkbookID().equals(wrkbkID))
+						if(tslt.getViewWorkbookID().equals(wrkbkID))
 							return ((String) ((JSONObject) childArray.get(i)).get("id"));
 					}
 	
@@ -288,7 +275,7 @@ public class TableauRest {
 			
 			
 		} catch (Exception | Error e) {
-			throw new Error("Error in getting Project ID: " + e.getMessage());
+			throw new Error("Error in getting View Data to iterate over: " + e.getMessage());
 		}
 		
 		
@@ -297,11 +284,11 @@ public class TableauRest {
 	public void getPDF(String localURL, String pdfPath) {
 		
 		try {	
-			ClientResponse clientResponse = genericGetorPost(localURL, null, tslt.getTokenID(), true,"");
+				ClientResponse clientResponse = genericGetorPost(localURL, null, tslt.getTokenID(), true,"");
 	
-			//data comes back in body
-			  InputStream is = clientResponse.getEntityInputStream();
-		       OutputStream os = new FileOutputStream(pdfPath);
+				//data comes back in body
+				InputStream is = clientResponse.getEntityInputStream();
+		        OutputStream os = new FileOutputStream(pdfPath);
 
 		        byte[] buffer = new byte[1024];
 		        int bytesRead;
@@ -317,13 +304,10 @@ public class TableauRest {
 		
 			
 		} catch (Exception | Error e) {
-			throw new Error("Error in getting Project ID: " + e.getMessage());
+				throw new Error("Error in getting Project ID: " + e.getMessage());
 		}
 		
 		
 	}
-	
-
-	
-	
+		
 }

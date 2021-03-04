@@ -39,6 +39,7 @@ public class BatchPDF {
 		BatchPDF _core = new BatchPDF();
 		List<String> logList = Arrays.asList(
 				"*******************Starting pdf generation using properties file: " + args[0] + "*******************");
+		//Use BlockingQueue to manage concurrent threads writing to log file
 		BlockingQueue<String> bq = new ArrayBlockingQueue<>(400, true, logList);
 
 		LocalDateTime startTime = LocalDateTime.now();
@@ -58,13 +59,10 @@ public class BatchPDF {
 			if (_core.doesConfigFileHaveValue("logFile"))
 				logFile=s_properties.getProperty("logFile");
 			
-			//using ArrayBlockingQueue so that multiple threads can write to log file
 			LogWriter lw = new LogWriter(bq, logFile);
 			lw.start();
 			
 			_core.checkPropValues();
-		
-			
 			
 			try {
 				//sign on to site
@@ -72,9 +70,7 @@ public class BatchPDF {
 						s_properties.getProperty("server.url"), s_properties.getProperty("server.site"));
 				
 				TableauRest tr= new TableauRest(tslt,bq);
-				
 				tr.login();
-				
 				_core.writeToLog("Logged in to server: " + s_properties.getProperty("server.url") +", site: " + s_properties.getProperty("server.site"),bq);
 				
 				/*
@@ -156,15 +152,13 @@ public class BatchPDF {
 							
 						}
 						
-						//need to convert comma's in filter to %5C%2C
+						//need to convert comma's in filter to %5C%2C see https://kb.tableau.com/articles/Issue/special-characters-in-url-parameters
 						//StandardCharsets.UTF_8.toString() converts to %2C, so we need to add escape
 						filter = URLEncoder.encode(filter,StandardCharsets.UTF_8.toString());
 						String fileName = filter;
 						filter=filter.replaceAll("%2C", "%5C%2C");
 						
 						String pdfURL=localURL+filter;
-						
-						
 						
 						fileName = s_properties.getProperty("file.Output")+ fileName+".pdf";
 						String startMessage="Requesting PDF " + counter + " of " + (values.length-1) + " " +  URLEncoder.encode(filter,StandardCharsets.UTF_8.toString())+".pdf";
